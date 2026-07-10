@@ -97,13 +97,12 @@ def get_student(id):
 
 #=======================================
 #code to run
+with app.app_context():
+        #fir sab tables / default tables ko banayenge. Agar koi default object hai, toh use initialize karenge or db me store karenge.
+        db.create_all()
 # agar yeh file run hogi
 if __name__ == "__main__":
     #flask app ka env and settings active karenge
-    with app.app_context():
-        #fir sab tables / default tables ko banayenge. Agar koi default object hai, toh use initialize karenge or db me store karenge.
-        db.create_all()
-
     #agar app run hogi to uska logs bhi banana padega server side.
     app.run(debug=True)
 #=======================================
