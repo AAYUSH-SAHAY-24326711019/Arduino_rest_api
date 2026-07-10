@@ -15,3 +15,17 @@ then its also equal to render/abcs23233/
 so now render/abcs23233/{route name}/<int:>
 will work as a rest api for you to access it.
 --------------------------------------------------------
+
+-------------------Todo 1 -------------------------
+to make an api locally on my machine.
+not to currently deploy it and test it.
+
+to make a flask app.
+
+//step 1.
+    post api : /create_student/<id>/<sname>
+    store it in the sqlite for the time being, then will switch to postgres.
+
+    get api : /get_student/<id>
+    fetch from sqlite and return as a json object.
+--------------------------------------------------
