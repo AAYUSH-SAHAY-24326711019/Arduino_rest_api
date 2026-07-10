@@ -29,3 +29,13 @@ to make a flask app.
     get api : /get_student/<id>
     fetch from sqlite and return as a json object.
 --------------------------------------------------
+
+---------------------Action of todo 1 ---------------------
+(step 1)
+python -m venv env [make the environment]
+env\Scripts\activate [activat the environment]
+
+run pip install flask flask-sqlalchemy [but do pip freeze and
+store in the requirements.txt]
+(render may do pip3 / python3 ...possible)
+
