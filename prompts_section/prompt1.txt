@@ -1,0 +1,9 @@
+----------------Question 1------------------
+We need to make rest api.
+Question. Made the repo in github.
+repo has a flask application.
+flask application has some rest api implementation.
+from github deployed my repo on render.
+render gives a url link to it. like render/abcs23233 etc.
+shall i be able to access my rest api from that.
+-------------------------------------------------
