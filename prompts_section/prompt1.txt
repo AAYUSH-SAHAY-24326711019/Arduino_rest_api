@@ -39,3 +39,7 @@ run pip install flask flask-sqlalchemy [but do pip freeze and
 store in the requirements.txt]
 (render may do pip3 / python3 ...possible)
 
+---------------------------------------------------------------
+Step1 is implemented. we made 2 rest api(s).
+tested it via html page.
+
