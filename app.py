@@ -4,7 +4,7 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 #isse sqlite / postgres me work karenge.
 
-app = Flask(__name___)
+app = Flask(__name__)
 # flask application framework ka object bana
 
 #sqlite ka code
