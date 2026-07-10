@@ -7,3 +7,11 @@ from github deployed my repo on render.
 render gives a url link to it. like render/abcs23233 etc.
 shall i be able to access my rest api from that.
 -------------------------------------------------
+
+------------------Answer to Question1 ----------------
+yes sure. if the url is render/abcs23233
+then its also equal to render/abcs23233/
+
+so now render/abcs23233/{route name}/<int:>
+will work as a rest api for you to access it.
+--------------------------------------------------------
