@@ -75,3 +75,22 @@ def create_student(id, sname):
     })
 
 #=======================================
+
+#=======================================
+# Get Student by id check
+@app.route("/get_student/<int:id>", methods=["GET"])
+def get_student(id):
+
+    #get the student by id if exists
+    student = Student.query.get(id)
+
+    #case : student id provided not present.
+    if not student:
+        return jsonify({
+            "message": "Student not found"
+        }), 404
+
+    #case the student was present. toh make the object to dictionary / json by class ka method [to_dict()] then jsonify that.
+    return jsonify(student.to_dict())
+
+#=======================================
