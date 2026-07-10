@@ -96,6 +96,19 @@ def get_student(id):
 #=======================================
 
 #=======================================
+# Get All Students
+@app.route("/all", methods=["GET"])
+def get_all_students():
+
+    students = Student.query.all()
+
+    return jsonify(
+        [student.to_dict() for student in students]
+    )
+#=======================================
+
+
+#=======================================
 #code to run
 with app.app_context():
         #fir sab tables / default tables ko banayenge. Agar koi default object hai, toh use initialize karenge or db me store karenge.

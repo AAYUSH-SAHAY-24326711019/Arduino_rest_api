@@ -49,3 +49,7 @@ some changes made
 ability to run the render.
 [success.]
 
+-----------------------------------------------------
+(step 3)
+to make a rest api that gives all the records as an array of all the json objects.
+
