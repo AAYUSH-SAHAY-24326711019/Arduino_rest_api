@@ -43,3 +43,9 @@ store in the requirements.txt]
 Step1 is implemented. we made 2 rest api(s).
 tested it via html page.
 
+(step2)
+To deploy over render.
+some changes made
+ability to run the render.
+[success.]
+
