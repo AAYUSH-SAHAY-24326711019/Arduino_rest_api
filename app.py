@@ -1,11 +1,15 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify,send_file,abort
+import os
+from datetime import datetime
 # flask me kam kar rhe hain. json bhi use hoga.
 
 from flask_sqlalchemy import SQLAlchemy
 #isse sqlite / postgres me work karenge.
 
-app = Flask(__name__)
+# app = Flask(__name__)
+app = Flask(__name__,instance_relative_config=True)
 # flask application framework ka object bana
+#ab ap instance folder ka components ko use kar sakte hain.
 
 #sqlite ka code
 app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///students.db"
@@ -127,6 +131,29 @@ def get_all_students():
     )
 #=======================================
 
+#=======================================
+#Render does not store / persist changes
+# to database state then to download the
+#latest db .sqlite file.
+
+@app.get("/db")
+def download_db():
+    #path chahiye db ka
+    db_path = os.path.join(app.instance_path,"students.db")
+
+    #agar nahi mila to
+    if not os.path.exists(db_path):
+        abort(404,description="Database file not found")
+
+    #mila toh download hoga.
+    #time kya hai
+    now = datetime.now()
+    return send_file(db_path,
+                     mimetype="application/x-sqlite3",
+                     as_attachment=True,
+                     download_name=f"students{now.strftime("%d/%m/%Y, %H:%M:%S")}.db")
+
+#=======================================
 
 #=======================================
 #code to run
