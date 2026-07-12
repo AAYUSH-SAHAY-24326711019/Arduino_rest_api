@@ -56,8 +56,9 @@ class Student(db.Model):
 #=======================================
 # Create Student
 #is url se match ko request aaye to neeche ka function run karo
-@app.route("/create_student/<int:id>/<string:sname>", methods=["POST"])
-def create_student(id, sname):
+# @app.route("/create_student/<int:id>/<string:sname>", methods=["POST"])
+@app.route("/create_student/<int:id>/<string:sname>/<string:sroll>/<string:semail>/<string:scourse>/<string:ssession_start>/<string:ssession_end>", methods=["POST"])
+def create_student(id, sname,sroll,semail,scourse,ssession_start,ssession_end):
 
     #object lo id ke basis par, yadi db me present ho
     existing_student = Student.query.get(id)
@@ -72,7 +73,13 @@ def create_student(id, sname):
     #student ka object banana hai
     student = Student(
         id=id,
-        sname=sname
+        sname=sname,
+        sroll=sroll,
+        semail=semail,
+        scourse=scourse,
+        ssession_start=ssession_start,
+        ssession_end=ssession_end
+
     )
 
     #database me store karna hai
