@@ -1,4 +1,4 @@
-from flask import Flask, jsonify,send_file,abort
+from flask import Flask, jsonify, request,send_file,abort
 import os
 from datetime import datetime
 # flask me kam kar rhe hain. json bhi use hoga.
@@ -188,6 +188,44 @@ class Attendance(db.Model):
 
 #=======================================
 
+#=======================================
+#to mark attendance
+@app.route("/attendance", methods=["POST"])
+def mark_attendance():
+
+    data = request.get_json()
+
+    rolls = data.get("students", [])
+
+    saved_records = []
+
+    for roll in rolls:
+
+        student = Student.query.filter_by(
+            sroll=str(roll)
+        ).first()
+
+        if not student:
+            continue
+
+        attendance = Attendance(
+            sroll=student.sroll,
+            sname=student.sname,
+            course=student.scourse,
+            session=f"{student.ssession_start}-{student.ssession_end}"
+        )
+
+        db.session.add(attendance)
+
+        saved_records.append(attendance)
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "Attendance saved",
+        "count": len(saved_records)
+    })
+#=======================================
 
 #=======================================
 #code to run
