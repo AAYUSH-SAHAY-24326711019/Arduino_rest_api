@@ -156,6 +156,40 @@ def download_db():
 #=======================================
 
 #=======================================
+# attendance ka table add kiye
+class Attendance(db.Model):
+
+    __tablename__ = "attendance"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    sroll = db.Column(db.String(30), nullable=False)
+
+    sname = db.Column(db.String(100), nullable=False)
+
+    course = db.Column(db.String(30), nullable=True)
+
+    session = db.Column(db.String(20), nullable=False)
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "sroll": self.sroll,
+            "sname": self.sname,
+            "course": self.course,
+            "session": self.session,
+            "created_at": self.created_at.isoformat()
+        }
+
+#=======================================
+
+
+#=======================================
 #code to run
 with app.app_context():
         #fir sab tables / default tables ko banayenge. Agar koi default object hai, toh use initialize karenge or db me store karenge.
