@@ -1,6 +1,9 @@
-from flask import Flask, jsonify, request,send_file,abort,render_template
+from flask import Flask, Response, jsonify, request,send_file,abort,render_template
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
+import csv
+import io
+
 # flask me kam kar rhe hain. json bhi use hoga.
 
 from flask_sqlalchemy import SQLAlchemy
@@ -240,6 +243,128 @@ def get_attendance():
 
     return jsonify(
         [record.to_dict() for record in attendance_records]
+    )
+
+#=======================================
+
+#=======================================
+# csv banane ka common helper
+# taaki teeno api me code repeat na ho.
+def _attendance_to_csv_response(records, filename):
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    #header row
+    writer.writerow(
+        ["id", "sroll", "sname", "course", "session", "created_at"]
+    )
+
+    #data rows
+    for r in records:
+        writer.writerow([
+            r.id,
+            r.sroll,
+            r.sname,
+            r.course,
+            r.session,
+            r.created_at.isoformat()
+        ])
+
+    csv_data = output.getvalue()
+
+    return Response(
+        csv_data,
+        mimetype="text/csv",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )
+
+# DDMMYY string ko datetime me convert karega
+# invalid format pe ValueError khud raise ho jayega.
+def _parse_ddmmyy(date_str):
+    return datetime.strptime(date_str, "%d%m%y")
+
+#=======================================
+
+#=======================================
+# saari attendance ab tak ki, csv me download
+@app.route("/downloadattendance", methods=["GET"])
+def download_attendance_csv():
+
+    records = Attendance.query.order_by(Attendance.created_at.asc()).all()
+
+    now = datetime.now()
+
+    return _attendance_to_csv_response(
+        records,
+        f"attendance_all_{now.strftime('%d%m%y')}.csv"
+    )
+
+#=======================================
+
+#=======================================
+# date range wali attendance, csv me
+# eg /getBD/120726/130726  -> 12 July 2026 se 13 July 2026 tak
+@app.route("/getBD/<string:startdate>/<string:enddate>", methods=["GET"])
+def get_attendance_by_date(startdate, enddate):
+
+    try:
+        start_dt = _parse_ddmmyy(startdate)
+        # enddate wale din ka pura din cover karne ke liye
+        # agla din 00:00:00 se pehle tak ki range lenge.
+        end_dt = _parse_ddmmyy(enddate) + timedelta(days=1)
+    except ValueError:
+        return jsonify({
+            "message": "Invalid date format. Use DDMMYY, e.g. 120726"
+        }), 400
+
+    if start_dt > end_dt:
+        return jsonify({
+            "message": "startdate cannot be after enddate"
+        }), 400
+
+    records = Attendance.query.filter(
+        Attendance.created_at >= start_dt,
+        Attendance.created_at < end_dt
+    ).order_by(Attendance.created_at.asc()).all()
+
+    return _attendance_to_csv_response(
+        records,
+        f"attendance_{startdate}_to_{enddate}.csv"
+    )
+
+#=======================================
+
+#=======================================
+# same as above, course ke basis par bhi filter
+# eg /getBD/120726/130726/BCA
+@app.route("/getBD/<string:startdate>/<string:enddate>/<string:course>", methods=["GET"])
+def get_attendance_by_date_and_course(startdate, enddate, course):
+
+    try:
+        start_dt = _parse_ddmmyy(startdate)
+        end_dt = _parse_ddmmyy(enddate) + timedelta(days=1)
+    except ValueError:
+        return jsonify({
+            "message": "Invalid date format. Use DDMMYY, e.g. 120726"
+        }), 400
+
+    if start_dt > end_dt:
+        return jsonify({
+            "message": "startdate cannot be after enddate"
+        }), 400
+
+    records = Attendance.query.filter(
+        Attendance.created_at >= start_dt,
+        Attendance.created_at < end_dt,
+        Attendance.course == course
+    ).order_by(Attendance.created_at.asc()).all()
+
+    return _attendance_to_csv_response(
+        records,
+        f"attendance_{course}_{startdate}_to_{enddate}.csv"
     )
 
 #=======================================
