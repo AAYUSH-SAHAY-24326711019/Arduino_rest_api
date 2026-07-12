@@ -228,6 +228,19 @@ def mark_attendance():
 #=======================================
 
 #=======================================
+#get attendance api
+@app.route("/getattendance", methods=["GET"])
+def get_attendance():
+
+    attendance_records = Attendance.query.all()
+
+    return jsonify(
+        [record.to_dict() for record in attendance_records]
+    )
+
+#=======================================
+
+#=======================================
 #code to run
 with app.app_context():
         #fir sab tables / default tables ko banayenge. Agar koi default object hai, toh use initialize karenge or db me store karenge.
