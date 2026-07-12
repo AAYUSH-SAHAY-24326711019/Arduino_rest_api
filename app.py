@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request,send_file,abort
+from flask import Flask, jsonify, request,send_file,abort,render_template
 import os
 from datetime import datetime
 # flask me kam kar rhe hain. json bhi use hoga.
@@ -24,6 +24,10 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 #isse ham database ko flask app se conntect karenge.
+
+'''@app.route("/") #test karne ke liye
+def home():
+    return render_template("test_attendance.html")'''
 
 #=======================================
 # student ki class 

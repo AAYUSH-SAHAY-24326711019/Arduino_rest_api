@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Test</title>
+</head>
+<body>
+
+    <h2>Mark Attendance</h2>
+
+    <label>Student Rolls (comma separated)</label>
+    <br><br>
+
+    <input
+        type="text"
+        id="rolls"
+        placeholder="1010,1011,1100"
+        size="50"
+    >
+
+    <br><br>
+
+    <button onclick="markAttendance()">
+        Mark Attendance
+    </button>
+
+    <br><br>
+
+    <pre id="result"></pre>
+
+    <script>
+
+        async function markAttendance() {
+
+            const rollInput =
+                document.getElementById("rolls").value;
+
+            const rollArray = rollInput
+                .split(",")
+                .map(r => r.trim())
+                .filter(r => r.length > 0);
+
+            const payload = {
+                students: rollArray
+            };
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:5000/attendance",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                const result =
+                    await response.json();
+
+                document.getElementById("result")
+                    .textContent =
+                    JSON.stringify(result, null, 4);
+
+            } catch (error) {
+
+                document.getElementById("result")
+                    .textContent =
+                    error;
+
+            }
+        }
+
+    </script>
+
+</body>
+</html>
