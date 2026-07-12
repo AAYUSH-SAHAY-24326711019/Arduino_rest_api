@@ -31,12 +31,25 @@ class Student(db.Model):
 
     sname = db.Column(db.String(100), nullable=False)
 
+    #/* All new fields added to the database table
+    sroll = db.Column(db.String(30),nullable=True)
+    semail = db.Column(db.String(5),nullable=True)
+    scourse = db.Column(db.String(30),nullable=True)
+    ssession_start = db.Column(db.String(5),nullable=False)
+    ssession_end = db.Column(db.String(5),nullable=False)
+    #*/
+
     # app id and name do
     #yeh javascript object return karega.
     def to_dict(self):
         return {
             "id": self.id,
-            "sname": self.sname
+            "sname": self.sname,
+            "sroll":self.sroll,
+            "semail":self.semail,
+            "scourse":self.scourse,
+            "ssession_start":self.ssession_start,
+            "ssession_end":self.ssession_end
         }
 #=======================================
 
