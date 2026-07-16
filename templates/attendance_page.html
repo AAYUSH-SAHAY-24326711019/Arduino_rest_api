@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CIMAGE Attendance Viewer</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f7f8fa;
+}
+
+/* HEADER */
+
+.hero{
+    background:white;
+    padding:20px 30px;
+    border-bottom:1px solid #ececec;
+}
+
+.hero-content{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.hero-logo{
+    width:220px;
+}
+
+/* LAYOUT */
+
+.layout{
+    display:flex;
+}
+
+.sidebar{
+    width:280px;
+    background:white;
+    border-right:1px solid #ececec;
+    height:calc(100vh - 90px);
+    overflow:auto;
+    position:sticky;
+    top:0;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar li{
+    border-bottom:1px solid #f1f1f1;
+}
+
+.sidebar a{
+    display:block;
+    padding:15px;
+    color:#333;
+    text-decoration:none;
+}
+
+.sidebar a:hover{
+    background:#f5f7ff;
+}
+
+.content{
+    flex:1;
+    padding:30px;
+}
+
+/* SECTION */
+
+.section{
+    margin-bottom:50px;
+}
+
+.section-title{
+    font-size:28px;
+    margin-bottom:20px;
+}
+
+/* GRID */
+
+.attendance-grid{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fill,minmax(260px,1fr));
+    gap:20px;
+}
+
+/* CARD */
+
+.attendance-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:20px;
+
+    box-shadow:
+    0 5px 18px rgba(0,0,0,.06);
+
+    border-left:6px solid #198754;
+
+}
+
+.roll{
+    font-size:22px;
+    font-weight:600;
+}
+
+.name{
+    margin-top:8px;
+    color:#444;
+}
+
+.session{
+    margin-top:8px;
+    color:#666;
+}
+
+.time{
+    margin-top:10px;
+    font-size:13px;
+    color:#888;
+}
+
+.count-badge{
+
+    display:inline-block;
+
+    margin-bottom:15px;
+
+    background:#eef3ff;
+
+    color:#0d6efd;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+}
+
+@media(max-width:900px){
+
+    .layout{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+    }
+
+}
+
+</style>
+</head>
+<body>
+
+<header class="hero">
+
+    <div class="hero-content">
+
+        <img
+        src="{{ url_for('static', filename='college.png') }}"
+        class="hero-logo">
+
+        <div>
+
+            <h1>
+                CIMAGE Attendance Records
+            </h1>
+
+            <p>
+                Latest Attendance Grouped By Course
+            </p>
+
+        </div>
+
+    </div>
+
+</header>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <ul>
+
+            {% for course, records in grouped.items() %}
+
+            <li>
+
+                <a href="#course{{ loop.index }}">
+
+                    {{ course }}
+                    ({{ records|length }})
+
+                </a>
+
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </aside>
+
+    <!-- CONTENT -->
+
+    <main class="content">
+
+        {% for course, records in grouped.items() %}
+
+        <section
+        class="section"
+        id="course{{ loop.index }}">
+
+            <h2 class="section-title">
+
+                {{ course }}
+
+            </h2>
+
+            <div class="count-badge">
+
+                Total Attendance :
+                {{ records|length }}
+
+            </div>
+
+            <div class="attendance-grid">
+
+                {% for record in records %}
+
+                <div class="attendance-card">
+
+                    <div class="roll">
+
+                        {{ record.sroll }}
+
+                    </div>
+
+                    <div class="name">
+
+                        {{ record.sname }}
+
+                    </div>
+
+                    <div class="session">
+
+                        Session :
+                        {{ record.session }}
+
+                    </div>
+
+                    <div class="time">
+
+                        {{ record.created_at }}
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        {% endfor %}
+
+    </main>
+
+</div>
+
+</body>
+</html>
