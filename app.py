@@ -439,6 +439,31 @@ def attendance_scan():
 #=======================================
 
 #=======================================
+# Recent Attendance Page
+@app.route("/attendancepage")
+def attendance_page():
+
+    records = Attendance.query.order_by(
+        Attendance.created_at.desc()
+    ).all()
+
+    grouped = {}
+
+    for record in records:
+
+        grouped.setdefault(
+            record.course,
+            []
+        ).append(record)
+
+    return render_template(
+        "attendance_page.html",
+        grouped=grouped
+    )
+
+#=======================================
+
+#=======================================
 #code to run
 with app.app_context():
         #fir sab tables / default tables ko banayenge. Agar koi default object hai, toh use initialize karenge or db me store karenge.
