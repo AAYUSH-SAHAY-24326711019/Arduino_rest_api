@@ -28,9 +28,9 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 #isse ham database ko flask app se conntect karenge.
 
-'''@app.route("/") #test karne ke liye
+@app.route("/") #test karne ke liye
 def home():
-    return render_template("test_attendance.html")'''
+    return render_template("render_main_page.html")
 
 #=======================================
 # student ki class 

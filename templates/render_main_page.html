@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIMAGE Student Attendance API Portal</title>
+
+<!-- <link rel="stylesheet" href="style.css"> -->
+ <style>
+    *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f7f8fa;
+    color:#222;
+}
+
+/* Splash */
+
+.splash-screen{
+    position:fixed;
+    inset:0;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    transition:all .8s ease;
+}
+
+.logo{
+    width:420px;
+    opacity:0;
+    transform:scale(.92);
+    animation:logoReveal 1.5s ease forwards;
+}
+
+@keyframes logoReveal{
+
+    0%{
+        opacity:0;
+        transform:scale(.92);
+    }
+
+    100%{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
+.splash-screen.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+/* Hero */
+
+.hero{
+    background:white;
+    padding:35px 60px;
+    border-bottom:1px solid #ececec;
+}
+
+.hero-content{
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+.hero-logo{
+    width:220px;
+}
+
+.hero h1{
+    font-size:32px;
+    font-weight:600;
+    margin-bottom:6px;
+}
+
+.hero p{
+    color:#666;
+}
+
+/* Container */
+
+.container{
+    padding:50px;
+}
+
+.section-title{
+    font-size:24px;
+    margin-bottom:25px;
+    font-weight:600;
+}
+
+/* Table */
+
+.table-wrapper{
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.05);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#fafafa;
+}
+
+th{
+    text-align:left;
+    padding:20px;
+    font-size:14px;
+    letter-spacing:.5px;
+    color:#555;
+}
+
+td{
+    padding:20px;
+    border-top:1px solid #efefef;
+}
+
+tbody tr{
+    transition:.25s;
+}
+
+tbody tr:hover{
+    background:#fafcff;
+}
+
+/* Method Tags */
+
+td:first-child{
+    font-weight:600;
+}
+
+@media(max-width:768px){
+
+    .hero-content{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .container{
+        padding:20px;
+    }
+
+    table{
+        font-size:13px;
+    }
+}
+ </style>
+</head>
+
+<body>
+
+<div class="splash-screen">
+    <img src="{{ url_for('static', filename='college.png') }}" class="logo" alt="CIMAGE">
+</div>
+
+<header class="hero">
+
+    <div class="hero-content">
+        <img src="{{ url_for('static', filename='college.png') }}" alt="CIMAGE Logo" class="hero-logo">
+
+        <div>
+            <h1>CIMAGE API Portal</h1>
+            <p>
+                Student Management & Attendance Service Documentation
+            </p>
+        </div>
+    </div>
+
+</header>
+
+<main class="container">
+
+    <div class="section-title">
+        Available API Endpoints
+    </div>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>POST</td>
+                    <td>/create_student/&lt;id&gt;/...</td>
+                    <td>Create Student Record</td>
+                </tr>
+
+                <tr>
+                    <td>GET</td>
+                    <td>/get_student/&lt;id&gt;</td>
+                    <td>Fetch Student by ID</td>
+                </tr>
+
+                <tr>
+                    <td>GET</td>
+                    <td>/all</td>
+                    <td>Fetch All Students</td>
+                </tr>
+
+                <tr>
+                    <td>GET</td>
+                    <td>/db</td>
+                    <td>Download SQLite Database</td>
+                </tr>
+
+                <tr>
+                    <td>POST</td>
+                    <td>/attendance</td>
+                    <td>Mark Attendance</td>
+                </tr>
+
+                <tr>
+                    <td>GET</td>
+                    <td>/getattendance</td>
+                    <td>View Attendance Records</td>
+                </tr>
+
+                <tr>
+                    <td>GET</td>
+                    <td>/downloadattendance</td>
+                    <td>Download Attendance CSV</td>
+                </tr>
+
+                <tr>
+                    <td>GET</td>
+                    <td>/getBD/&lt;start&gt;/&lt;end&gt;</td>
+                    <td>Attendance CSV by Date Range</td>
+                </tr>
+
+                <tr>
+                    <td>GET</td>
+                    <td>/getBD/&lt;start&gt;/&lt;end&gt;/&lt;course&gt;</td>
+                    <td>Attendance CSV by Date & Course</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+<!-- <script src="script.js"></script> -->
+ <script>
+
+    window.addEventListener("load",()=>{
+
+    setTimeout(()=>{
+
+        document
+        .querySelector(".splash-screen")
+        .classList
+        .add("hide");
+
+    },1800);
+
+});
+ </script>
+
+</body>
+</html>
