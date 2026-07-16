@@ -12,3 +12,5 @@ packaging==26.2
 SQLAlchemy==2.0.51
 typing_extensions==4.16.0
 Werkzeug==3.1.8
+pillow==12.3.0
+qrcode==8.2

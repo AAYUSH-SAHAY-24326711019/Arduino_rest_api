@@ -1,0 +1,212 @@
+for the attendance, this api is utilized.
+
+
+#=======================================
+# attendance ka table add kiye
+class Attendance(db.Model):
+
+    __tablename__ = "attendance"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    sroll = db.Column(db.String(30), nullable=False)
+
+    sname = db.Column(db.String(100), nullable=False)
+
+    course = db.Column(db.String(30), nullable=True)
+
+    session = db.Column(db.String(20), nullable=False)
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "sroll": self.sroll,
+            "sname": self.sname,
+            "course": self.course,
+            "session": self.session,
+            "created_at": self.created_at.isoformat()
+        }
+
+#=======================================
+
+#=======================================
+#to mark attendance
+@app.route("/attendance", methods=["POST"])
+def mark_attendance():
+
+    data = request.get_json()
+
+    rolls = data.get("students", [])
+
+    saved_records = []
+
+    for roll in rolls:
+
+        student = Student.query.filter_by(
+            sroll=str(roll)
+        ).first()
+
+        if not student:
+            continue
+
+        attendance = Attendance(
+            sroll=student.sroll,
+            sname=student.sname,
+            course=student.scourse,
+            session=f"{student.ssession_start}-{student.ssession_end}"
+        )
+
+        db.session.add(attendance)
+
+        saved_records.append(attendance)
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "Attendance saved",
+        "count": len(saved_records)
+    })
+#=======================================
+
+1stly : generate the qr codes from the student.db[students table] 
+2ndly : utlize the necessary details that would be used to mark the attendance.
+
+Camera will scan Qr code, extract the required info from qr code and then will
+substitute the values in the api HTTP call inside the application.
+
+so lets make the api end point that makes the qr code of all students.
+[if new students added then on refresh reflects the qr code for the newly created student.]
+1st make the qr codes then render them on the template where they are shown in a grid pattern
+.
+
+Grouped by the Course name and their Session.
+There must be a side menu on the left hand side collapsable.
+it must show all the courses names and their session names and on click guides me to the
+section where there is:
+heading eg. MCA Session : 2024-2026
+Grid of qr codes in cards with their sroll mentioned below.
+On click of Qr code card it turns green, and there be a button to clear all aside heading to 
+turn the card as default. 
+
+let the api end point be the /qrpage
+Renders the template that shows the grid of the qr codes generated using the students table
+
+db = SQLAlchemy(app)
+#isse ham database ko flask app se conntect karenge.
+
+@app.route("/") #test karne ke liye
+def home():
+    return render_template("render_main_page.html")
+
+#=======================================
+# student ki class 
+#isse sqlalchemy ko pata chalega ki iski table sqlite me banana hai.
+class Student(db.Model):
+    #id or name hona chahiye.
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    sname = db.Column(db.String(100), nullable=False)
+
+    #/* All new fields added to the database table
+    sroll = db.Column(db.String(30),nullable=True)
+    semail = db.Column(db.String(5),nullable=True)
+    scourse = db.Column(db.String(30),nullable=True)
+    ssession_start = db.Column(db.String(5),nullable=False)
+    ssession_end = db.Column(db.String(5),nullable=False)
+    #*/
+
+    # app id and name do
+    #yeh javascript object return karega.
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "sname": self.sname,
+            "sroll":self.sroll,
+            "semail":self.semail,
+            "scourse":self.scourse,
+            "ssession_start":self.ssession_start,
+            "ssession_end":self.ssession_end
+        }
+#=======================================
+
+#=======================================
+# Create Student
+#is url se match ko request aaye to neeche ka function run karo
+# @app.route("/create_student/<int:id>/<string:sname>", methods=["POST"])
+@app.route("/create_student/<int:id>/<string:sname>/<string:sroll>/<string:semail>/<string:scourse>/<string:ssession_start>/<string:ssession_end>", methods=["POST"])
+def create_student(id, sname,sroll,semail,scourse,ssession_start,ssession_end):
+
+    #object lo id ke basis par, yadi db me present ho
+    existing_student = Student.query.get(id)
+
+    #yadi koi value aaiye to hame yeh json msg error wali deni hai
+    if existing_student:
+        return jsonify({
+            "message": "Student already exists"
+        }), 400
+
+    #agar id nahi exist ki ho toh
+    #student ka object banana hai
+    student = Student(
+        id=id,
+        sname=sname,
+        sroll=sroll,
+        semail=semail,
+        scourse=scourse,
+        ssession_start=ssession_start,
+        ssession_end=ssession_end
+
+    )
+
+    #database me store karna hai
+    #yeh pending / rough list hai
+    db.session.add(student)
+    #is line se rough list ko fair kiya.
+    db.session.commit()
+
+    #db me save hua toh msg dena hai as json.
+    return jsonify({
+        "message": "Student created successfully",
+        "student": student.to_dict()
+    })
+
+#=======================================
+
+#=======================================
+# Get Student by id check
+@app.route("/get_student/<int:id>", methods=["GET"])
+def get_student(id):
+
+    #get the student by id if exists
+    student = Student.query.get(id)
+
+    #case : student id provided not present.
+    if not student:
+        return jsonify({
+            "message": "Student not found"
+        }), 404
+
+    #case the student was present. toh make the object to dictionary / json by class ka method [to_dict()] then jsonify that.
+    return jsonify(student.to_dict())
+
+#=======================================
+
+#=======================================
+# Get All Students
+@app.route("/all", methods=["GET"])
+def get_all_students():
+
+    students = Student.query.all()
+
+    return jsonify(
+        [student.to_dict() for student in students]
+    )
+#=======================================
+
+utilize the styling as this html file template.

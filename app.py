@@ -1,6 +1,7 @@
 from flask import Flask, Response, jsonify, request,send_file,abort,render_template
 import os
 from datetime import datetime, timedelta
+from utility import qrgen
 import csv
 import io
 
@@ -366,6 +367,39 @@ def get_attendance_by_date_and_course(startdate, enddate, course):
         records,
         f"attendance_{course}_{startdate}_to_{enddate}.csv"
     )
+
+#=======================================
+#Qr code generate karne ka route
+@app.route("/qrpage")
+def qr_page():
+
+    students = Student.query.all()
+
+    grouped = {}
+
+    for student in students:
+
+        session = (
+            f"{student.ssession_start}"
+            f"-"
+            f"{student.ssession_end}"
+        )
+
+        key = f"{student.scourse}|{session}"
+
+        student.qr = qrgen.generate_qr(student)
+
+        grouped.setdefault(
+            key,
+            []
+        ).append(student)
+
+    return render_template(
+        "qr_page.html",
+        grouped=grouped
+    )
+#=======================================
+
 
 #=======================================
 
