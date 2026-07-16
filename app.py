@@ -402,6 +402,41 @@ def qr_page():
 
 
 #=======================================
+# qr code scan karne ke bad attendance ka end point
+@app.route(
+    "/attendance/scan",
+    methods=["POST"]
+)
+def attendance_scan():
+
+    data = request.get_json()
+
+    roll = data.get("roll")
+
+    student = Student.query.filter_by(
+        sroll=roll
+    ).first()
+
+    if not student:
+        return jsonify({
+            "message":"Student not found"
+        }),404
+
+    attendance = Attendance(
+        sroll=student.sroll,
+        sname=student.sname,
+        course=student.scourse,
+        session=f"{student.ssession_start}-{student.ssession_end}"
+    )
+
+    db.session.add(attendance)
+    db.session.commit()
+
+    return jsonify({
+        "message":"Attendance Marked"
+    })
+
+#=======================================
 
 #=======================================
 #code to run
